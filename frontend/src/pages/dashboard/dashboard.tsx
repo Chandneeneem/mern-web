@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import './dashboard.css';
 
 import {
     getProducts,
@@ -137,7 +138,11 @@ const Dashboard = () => {
             setError('');
 
             if (editId) {
-                await updateProduct(editId, formData);
+                // await updateProduct(editId, formData);
+                await updateProduct({
+                    ...formData,
+                    id: editId
+                });
             } else {
                 await addProduct(formData);
             }
@@ -197,369 +202,499 @@ const Dashboard = () => {
         navigate('/login', { replace: true });
     };
 
-    return (
-        <div className="min-vh-100 bg-light">
 
-            {/* Navbar */}
-            <nav className="navbar bg-white shadow-sm px-4">
-                <span className="navbar-brand fw-bold">
-                    MERN Admin
-                </span>
+return (
+    <div className="dashboard-wrapper">
+        {/* Sidebar */}
+        <aside className="dashboard-sidebar">
+            <div className="sidebar-brand">
+                <div className="brand-logo">M</div>
+                <div>
+                    <h4>MERN<span>STACK</span></h4>
+                    <small>ADMIN PANEL</small>
+                </div>
+            </div>
 
-                <div className="d-flex align-items-center gap-3">
-                    <span>Welcome, {user?.name}</span>
+            <div className="sidebar-section">MAIN MENU</div>
 
+            <div className="sidebar-link active">
+                <span>▦</span> Dashboard
+            </div>
+
+
+
+            <div className="sidebar-bottom">
+                <div className="sidebar-help">
+                    <div className="help-icon">?</div>
+                    <div>
+                        <strong>Need help?</strong>
+                        <small>Contact support</small>
+                    </div>
+                </div>
+                <div className="sidebar-user">
+                    <div className="user-avatar">
+                        {user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                    </div>
+                    <div className="user-info">
+                        <strong>{user?.name || 'Admin'}</strong>
+                        <small>Administrator</small>
+                    </div>
                     <button
-                        className="btn btn-outline-danger btn-sm"
+                        className="sidebar-logout"
                         onClick={handleLogout}
+                        title="Logout"
                     >
-                        Logout
+                        ↗
                     </button>
                 </div>
-            </nav>
+            </div>
+        </aside>
 
-            <div className="container py-4">
+        {/* Main Content */}
+        <main className="dashboard-main">
 
-                {/* Top Section */}
-                <div className="d-flex justify-content-between align-items-center mb-4">
+            {/* Top Navbar */}
+            <header className="dashboard-header">
+                <div>
+                    <div className="header-breadcrumb">
+                        Pages / <strong>Dashboard</strong>
+                    </div>
+                    <h5>Dashboard Overview</h5>
+                </div>
+
+                <div className="header-right">
+                    <div className="header-date">
+                        <span>◷</span> Product Management
+                    </div>
+
+                    <div className="header-profile">
+                        <div className="user-avatar">
+                            {user?.name?.charAt(0)?.toUpperCase() || 'A'}
+                        </div>
+                        <div>
+                            <strong>{user?.name || 'Admin'}</strong>
+                            <small>Admin Account</small>
+                        </div>
+                    </div>
+
+                    <button
+                        className="header-logout"
+                        onClick={handleLogout}
+                    >
+                        Logout ↗
+                    </button>
+                </div>
+            </header>
+
+            <div className="dashboard-content">
+
+                {/* Welcome Section */}
+                <section className="welcome-section">
                     <div>
-                        <h3 className="fw-bold mb-1">
-                            Product Management
-                        </h3>
-
-                        <p className="text-muted mb-0">
-                            Manage your products here
+                        <span className="welcome-tag">
+                            ✦ YOUR WORKSPACE
+                        </span>
+                        <h2>Welcome back, {user?.name || 'Admin'}!</h2>
+                        <p>
+                            Here's what's happening with your products today.
                         </p>
                     </div>
 
                     <button
-                        className="btn btn-primary"
+                        className="add-product-btn"
                         onClick={handleAdd}
                     >
-                        + Add Product
+                        <span>＋</span> Add New Product
                     </button>
-                </div>
+                </section>
 
-                {/* Product Count */}
-                <div className="row mb-4">
-                    <div className="col-md-4">
-                        <div className="card border-0 shadow-sm">
-                            <div className="card-body">
-                                <p className="text-muted mb-1">
-                                    Total Products
-                                </p>
-
-                                <h2 className="fw-bold mb-0">
-                                    {totalProducts}
-                                </h2>
-                            </div>
+                {/* Statistics */}
+                <section className="stats-grid">
+                    <div className="stat-card">
+                        <div className="stat-top">
+                            <div className="stat-icon purple">▣</div>
+                            <span className="stat-label">TOTAL PRODUCTS</span>
                         </div>
+                        <h2>{totalProducts}</h2>
+                        <p>Products in your inventory</p>
                     </div>
-                </div>
+
+                    <div className="stat-card">
+                        <div className="stat-top">
+                            <div className="stat-icon blue">▦</div>
+                            <span className="stat-label">CURRENT PAGE</span>
+                        </div>
+                        <h2>{products.length}</h2>
+                        <p>Products displayed on this page</p>
+                    </div>
+
+                    <div className="stat-card">
+                        <div className="stat-top">
+                            <div className="stat-icon orange">⚠</div>
+                            <span className="stat-label">LOW STOCK</span>
+                        </div>
+                        <h2>
+                            {products.filter(p => p.stock <= 5).length}
+                        </h2>
+                        <p>Products with stock of 5 or less</p>
+                    </div>
+                </section>
 
                 {/* Add / Edit Form */}
                 {showForm && (
-                    <div className="card border-0 shadow-sm mb-4">
-                        <div className="card-body p-4">
+                    <section className="product-form-card">
+                        <div className="form-heading">
+                            <div>
+                                <span className="form-subtitle">
+                                    PRODUCT MANAGEMENT
+                                </span>
+                                <h4>
+                                    {editId ? 'Edit Product' : 'Add New Product'}
+                                </h4>
+                                <p>Enter the product details below.</p>
+                            </div>
 
-                            <h5 className="fw-bold mb-3">
-                                {editId ? 'Update Product' : 'Add Product'}
-                            </h5>
+                            <button
+                                className="close-form-btn"
+                                type="button"
+                                onClick={() => setShowForm(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
 
-                            <form onSubmit={handleSubmit}>
-                                <div className="row">
-
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">
-                                            Product Name
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            className="form-control"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">
-                                            Price
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            name="price"
-                                            className="form-control"
-                                            value={formData.price}
-                                            onChange={handleChange}
-                                            min="0"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">
-                                            Category
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="category"
-                                            className="form-control"
-                                            value={formData.category}
-                                            onChange={handleChange}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label">
-                                            Stock
-                                        </label>
-
-                                        <input
-                                            type="number"
-                                            name="stock"
-                                            className="form-control"
-                                            value={formData.stock}
-                                            onChange={handleChange}
-                                            min="0"
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="col-md-12 mb-3">
-                                        <label className="form-label">
-                                            Description
-                                        </label>
-
-                                        <textarea
-                                            name="description"
-                                            className="form-control"
-                                            rows={3}
-                                            value={formData.description}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-
-                                    <div className="col-md-12 mb-3">
-                                        <label className="form-label">
-                                            Image URL
-                                        </label>
-
-                                        <input
-                                            type="text"
-                                            name="image"
-                                            className="form-control"
-                                            value={formData.image}
-                                            onChange={handleChange}
-                                        />
-                                    </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className="row">
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">
+                                        Product Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        className="form-control"
+                                        placeholder="Enter product name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary me-2"
-                                >
-                                    {editId ? 'Update Product' : 'Save Product'}
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">
+                                        Price (₹) *
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        className="form-control"
+                                        placeholder="Enter price"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">
+                                        Category *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="category"
+                                        className="form-control"
+                                        placeholder="Enter category"
+                                        value={formData.category}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="col-md-6 mb-3">
+                                    <label className="form-label">
+                                        Available Stock *
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="stock"
+                                        className="form-control"
+                                        placeholder="Enter stock quantity"
+                                        value={formData.stock}
+                                        onChange={handleChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="col-12 mb-3">
+                                    <label className="form-label">
+                                        Description
+                                    </label>
+                                    <textarea
+                                        name="description"
+                                        className="form-control"
+                                        rows={3}
+                                        placeholder="Write product description..."
+                                        value={formData.description}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+
+                                <div className="col-12 mb-3">
+                                    <label className="form-label">
+                                        Product Image URL
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="image"
+                                        className="form-control"
+                                        placeholder="https://example.com/image.jpg"
+                                        value={formData.image}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="form-actions">
+                                <button type="submit" className="save-btn">
+                                    {editId ? '✓ Update Product' : '＋ Save Product'}
                                 </button>
 
                                 <button
                                     type="button"
-                                    className="btn btn-secondary"
+                                    className="cancel-btn"
                                     onClick={() => setShowForm(false)}
                                 >
                                     Cancel
                                 </button>
-                            </form>
-                        </div>
-                    </div>
+                            </div>
+                        </form>
+                    </section>
                 )}
 
-                {/* Search and Filter */}
-                <div className="card border-0 shadow-sm mb-4">
-                    <div className="card-body">
-                        <div className="row">
+                {/* Product Listing */}
+                <section className="product-section">
 
-                            <div className="col-md-6 mb-2">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="Search product name..."
-                                    value={search}
-                                    onChange={(e) => {
-                                        setSearch(e.target.value);
-                                        setPage(1);
-                                    }}
-                                />
-                            </div>
-
-                            <div className="col-md-4 mb-2">
-                                <select
-                                    className="form-select"
-                                    value={category}
-                                    onChange={(e) => {
-                                        setCategory(e.target.value);
-                                        setPage(1);
-                                    }}
-                                >
-                                    <option value="">All Categories</option>
-
-                                    {Array.from(
-                                        new Set(products.map((p) => p.category))
-                                    ).map((item) => (
-                                        <option key={item} value={item}>
-                                            {item}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="col-md-2 mb-2">
-                                <button
-                                    className="btn btn-outline-secondary w-100"
-                                    onClick={() => {
-                                        setSearch('');
-                                        setCategory('');
-                                        setPage(1);
-                                    }}
-                                >
-                                    Reset
-                                </button>
-                            </div>
-
+                    <div className="product-section-header">
+                        <div>
+                            <h4>Product Inventory</h4>
+                            <p>Manage and monitor all your products.</p>
                         </div>
+
+                        <span className="total-badge">
+                            {totalProducts} Products
+                        </span>
                     </div>
-                </div>
 
-                {/* Error */}
-                {error && (
-                    <div className="alert alert-danger">
-                        {error}
+                    {/* Search & Filter */}
+                    <div className="filter-toolbar">
+                        <div className="search-box">
+                            <span>⌕</span>
+                            <input
+                                type="text"
+                                placeholder="Search products by name..."
+                                value={search}
+                                onChange={(e) => {
+                                    setSearch(e.target.value);
+                                    setPage(1);
+                                }}
+                            />
+                        </div>
+
+                        <select
+                            className="category-select"
+                            value={category}
+                            onChange={(e) => {
+                                setCategory(e.target.value);
+                                setPage(1);
+                            }}
+                        >
+                            <option value="">All Categories</option>
+                            {Array.from(
+                                new Set(products.map(p => p.category))
+                            ).map(item => (
+                                <option key={item} value={item}>
+                                    {item}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            className="reset-btn"
+                            onClick={() => {
+                                setSearch('');
+                                setCategory('');
+                                setPage(1);
+                            }}
+                        >
+                            ↻ Reset
+                        </button>
                     </div>
-                )}
 
-                {/* Product Table */}
-                <div className="card border-0 shadow-sm">
-                    <div className="card-body">
+                    {/* Error */}
+                    {error && (
+                        <div className="alert alert-danger mx-3 mt-3">
+                            {error}
+                        </div>
+                    )}
 
-                        <h5 className="fw-bold mb-3">
-                            Product Listing
-                        </h5>
+                    {/* Table */}
+                    <div className="table-responsive">
+                        <table className="table product-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>PRODUCT</th>
+                                    <th>PRICE</th>
+                                    <th>CATEGORY</th>
+                                    <th>STOCK STATUS</th>
+                                    <th>QUANTITY</th>
+                                    <th className="text-center">ACTIONS</th>
+                                </tr>
+                            </thead>
 
-                        <div className="table-responsive">
-                            <table className="table table-hover align-middle">
-                                <thead className="table-light">
+                            <tbody>
+                                {loading ? (
                                     <tr>
-                                        <th>Image</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Category</th>
-                                        <th>Stock</th>
-                                        <th>Actions</th>
+                                        <td colSpan={6} className="empty-state">
+                                            <div className="spinner-border text-primary mb-2" />
+                                            <p>Loading products...</p>
+                                        </td>
                                     </tr>
-                                </thead>
-
-                                <tbody>
-                                    {loading ? (
-                                        <tr>
-                                            <td colSpan={6} className="text-center py-4">
-                                                Loading products...
-                                            </td>
-                                        </tr>
-                                    ) : products.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} className="text-center py-4">
-                                                No products found
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        products.map((product) => (
-                                            <tr key={product._id}>
-                                                <td>
+                                ) : products.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} className="empty-state">
+                                            <div className="empty-icon">▣</div>
+                                            <h6>No products found</h6>
+                                            <p>Try changing your search or add a new product.</p>
+                                            <button
+                                                className="add-product-btn"
+                                                onClick={handleAdd}
+                                            >
+                                                ＋ Add Product
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    products.map(product => (
+                                        <tr key={product._id}>
+                                            <td>
+                                                <div className="product-info">
                                                     {product.image ? (
                                                         <img
                                                             src={product.image}
                                                             alt={product.name}
-                                                            width="45"
-                                                            height="45"
-                                                            style={{ objectFit: 'cover' }}
+                                                            className="product-thumbnail"
                                                         />
                                                     ) : (
-                                                        'No Image'
+                                                        <div className="product-placeholder">
+                                                            ▣
+                                                        </div>
                                                     )}
-                                                </td>
 
-                                                <td>{product.name}</td>
+                                                    <div>
+                                                        <strong>{product.name}</strong>
+                                                        <small>
+                                                            ID: {product._id.slice(-8)}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </td>
 
-                                                <td>₹{product.price}</td>
+                                            <td>
+                                                <strong className="product-price">
+                                                    ₹{product.price}
+                                                </strong>
+                                            </td>
 
-                                                <td>{product.category}</td>
+                                            <td>
+                                                <span className="category-badge">
+                                                    {product.category}
+                                                </span>
+                                            </td>
 
-                                                <td>{product.stock}</td>
+                                            <td>
+                                                <span className={`stock-badge ${
+                                                    product.stock === 0
+                                                        ? 'out-stock'
+                                                        : product.stock <= 5
+                                                        ? 'low-stock'
+                                                        : 'in-stock'
+                                                }`}>
+                                                    {product.stock === 0
+                                                        ? 'Out of stock'
+                                                        : product.stock <= 5
+                                                        ? 'Low stock'
+                                                        : 'In stock'}
+                                                </span>
+                                            </td>
 
-                                                <td>
+                                            <td>
+                                                <strong>{product.stock}</strong>
+                                            </td>
+
+                                            <td>
+                                                <div className="table-actions">
                                                     <button
-                                                        className="btn btn-sm btn-warning me-2"
+                                                        className="edit-action"
                                                         onClick={() => handleEdit(product)}
                                                     >
-                                                        Edit
+                                                        ✎ Edit
                                                     </button>
 
                                                     <button
-                                                        className="btn btn-sm btn-danger"
+                                                        className="delete-action"
                                                         onClick={() => handleDelete(product._id)}
                                                     >
-                                                        Delete
+                                                        ✕
                                                     </button>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
-                        </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
 
-                        {/* Pagination */}
-                        <div className="d-flex justify-content-between align-items-center">
+                    {/* Pagination */}
+                    <div className="pagination-footer">
+                        <span>
+                            Showing {products.length} of {totalProducts} products
+                        </span>
 
-                            <span className="text-muted">
-                                Total: {totalProducts} products
+                        <div className="pagination-controls">
+                            <button
+                                disabled={page === 1 || loading}
+                                onClick={() => setPage(prev => prev - 1)}
+                            >
+                                ← Previous
+                            </button>
+
+                            <span className="page-number">
+                                {page} <small>/ {totalPages}</small>
                             </span>
 
-                            <div className="d-flex gap-2">
-                                <button
-                                    className="btn btn-outline-primary btn-sm"
-                                    disabled={page === 1 || loading}
-                                    onClick={() => setPage((prev) => prev - 1)}
-                                >
-                                    Previous
-                                </button>
-
-                                <span className="align-self-center">
-                                    Page {page} of {totalPages}
-                                </span>
-
-                                <button
-                                    className="btn btn-outline-primary btn-sm"
-                                    disabled={page >= totalPages || loading}
-                                    onClick={() => setPage((prev) => prev + 1)}
-                                >
-                                    Next
-                                </button>
-                            </div>
-
+                            <button
+                                disabled={page >= totalPages || loading}
+                                onClick={() => setPage(prev => prev + 1)}
+                            >
+                                Next →
+                            </button>
                         </div>
-
                     </div>
-                </div>
+
+                </section>
+
+                <footer className="dashboard-footer">
+                    {/* © 2026 MERN Stack Admin Dashboard. All rights reserved. */}
+                </footer>
 
             </div>
-        </div>
-    );
+        </main>
+    </div>
+);
+
 };
 
 export default Dashboard;

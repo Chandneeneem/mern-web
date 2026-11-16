@@ -34,16 +34,28 @@ export const getProductById = async (id: string) => {
 };
 
 // Update product
+// export const updateProduct = async (
+//     id: string,
+//     data: IProductPayload
+// ) => {
+//     const response = await api.put(`/products/${id}`, data);
+//     return response.data;
+// };
 export const updateProduct = async (
-    id: string,
-    data: IProductPayload
+    data: IProductPayload & { id: string }
 ) => {
-    const response = await api.put(`/products/${id}`, data);
+    const response = await api.put('/products', data);
     return response.data;
 };
 
 // Delete product
+// export const deleteProduct = async (id: string) => {
+//     const response = await api.delete(`/products/${id}`);
+//     return response.data;
+// };
 export const deleteProduct = async (id: string) => {
-    const response = await api.delete(`/products/${id}`);
+    const response = await api.delete('/products', {
+        data: { id }
+    });
     return response.data;
 };
