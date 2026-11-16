@@ -28,3 +28,16 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+
+# backend
+
+# PORT = 5000
+# MONGO_URL = mongodb://127.0.0.1:27017/mern_stack_dbb
+# JWT_SECRET = mysecretkey1233
+# npm install bcryptjs cors dotenv express jsonwebtoken mongoose multer
+# npm install -D typescript ts-node-dev @types/node @types/express @types/cors @types/jsonwebtoken @types/multer
+
+# frontend
+# VITE_API_URL=http://localhost:5000/apii
+# npm install axios bootstrap formik react react-dom react-router-dom yup
+# npm install -D @babel/core @eslint/js @rolldown/plugin-babel @types/babel__core @types/node @types/react @types/react-dom @vitejs/plugin-react babel-plugin-react-compiler eslint eslint-plugin-react-hooks eslint-plugin-react-refresh globals typescript typescript-eslint vite
